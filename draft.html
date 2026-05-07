@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>TdyReport Viewer Pro Max</title>
+    <title>TdyMD Viewer Pro Max</title>
     
     <!-- Design System Assets -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,7 +19,6 @@
         :root {
             /* System Tokens */
             --primary: #2f81f7;
-            --primary-hover: #4791ff;
             --bg: #0d1117;
             --surface: #161b22;
             --surface-elevated: #21262d;
@@ -33,11 +32,13 @@
             --radius-md: 10px;
             --nav-h: 64px;
             --toc-w: 280px;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --drawer-w: 300px;
+            --transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
             --btn-h: 40px;
         }
 
         body.light-mode {
+            color-scheme: light;
             --bg: #f6f8fa;
             --surface: #ffffff;
             --surface-elevated: #f0f2f5;
@@ -49,94 +50,90 @@
             --primary: #0969da;
         }
 
+        body.dark-mode {
+            color-scheme: dark;
+        }
+
         /* --- Base --- */
         body { margin: 0; background-color: var(--bg); color: var(--text-main); font-family: 'Inter', system-ui, sans-serif; transition: background-color 0.4s; overflow-x: hidden; }
 
-        /* --- Navbar --- */
+        /* --- Unified Navbar --- */
         .navbar {
             position: fixed; top: 0; width: 100%; height: var(--nav-h);
             background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border); z-index: 1000;
-            display: flex; align-items: center; padding: 0 1.5rem; box-sizing: border-box;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 1rem; box-sizing: border-box;
             padding-top: env(safe-area-inset-top);
+            gap: 12px;
         }
 
-        .brand-zone { display: flex; align-items: center; gap: 8px; cursor: pointer; flex-shrink: 0; }
-        .logo-icon { color: var(--primary); display: flex; align-items: center; justify-content: center; opacity: 1 !important; }
+        .nav-left { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+        .brand-zone { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+        .logo-icon { color: var(--primary); display: flex; align-items: center; justify-content: center; }
         .logo-icon i { stroke: url(#logo-gradient); }
-
-        .brand-name { font-weight: 700; font-size: 1.05rem; color: var(--text-heading); letter-spacing: -0.01em; }
+        .brand-name { font-weight: 700; font-size: 1rem; color: var(--text-heading); letter-spacing: -0.01em; }
         .version-tag { font-size: 0.7rem; font-weight: 500; color: var(--text-muted); opacity: 0.7; }
 
-        /* --- Actions --- */
-        .desktop-actions { display: flex; align-items: center; gap: 8px; margin-left: auto; }
-        .icon-btn {
+        .nav-right { display: flex; align-items: center; gap: 6px; flex: 1; justify-content: flex-end; min-width: 0; }
+        .nav-btn {
             width: var(--btn-h); height: var(--btn-h); display: flex; align-items: center; justify-content: center;
             border-radius: 10px; border: 1px solid var(--border); background: var(--surface-elevated);
-            color: var(--text-main); cursor: pointer; transition: var(--transition);
+            color: var(--text-main); cursor: pointer; transition: var(--transition); flex-shrink: 0;
         }
-        .icon-btn:hover { background: var(--surface); border-color: var(--primary); color: var(--primary); }
+        .nav-btn:hover { background: var(--surface); border-color: var(--primary); color: var(--primary); }
 
         #file-selector {
             background: var(--surface-elevated); color: var(--text-main); border: 1px solid var(--border);
-            border-radius: 10px; padding: 0 12px; font-size: 0.85rem; height: var(--btn-h); cursor: pointer;
+            border-radius: 10px; padding: 0 10px; font-size: 0.85rem; height: var(--btn-h); cursor: pointer;
             appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238b949e' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-            background-repeat: no-repeat; background-position: right 10px center; padding-right: 32px;
+            background-repeat: no-repeat; background-position: right 10px center; padding-right: 30px;
+            flex: 1; max-width: 280px; min-width: 80px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; transition: var(--transition);
         }
+        #file-selector:hover { border-color: var(--primary); }
 
-        /* --- Mobile Actions --- */
-        .mobile-only { display: none; }
-        .mobile-toggle-btn {
-            width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
-            background: transparent; border: none; color: var(--text-main); cursor: pointer;
-        }
-
-        /* --- Action Drawer --- */
-        .action-drawer {
-            position: fixed; bottom: 0; left: 0; width: 100%; background: var(--surface);
-            border-top: 1px solid var(--border); border-radius: 24px 24px 0 0;
-            z-index: 1100; padding: 1.5rem; padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
-            box-sizing: border-box;
-            transform: translateY(100%); transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.5);
-        }
-        .action-drawer.open { transform: translateY(0); }
-        .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1050; opacity: 0; visibility: hidden; transition: 0.3s; backdrop-filter: blur(4px); }
+        /* --- Drawer --- */
+        .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1050; opacity: 0; visibility: hidden; transition: 0.3s; backdrop-filter: blur(4px); }
         .drawer-overlay.open { opacity: 1; visibility: visible; }
-        .drawer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; }
-        .drawer-title { font-weight: 700; font-size: 1.1rem; color: var(--text-heading); }
-        .drawer-handle { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: -10px auto 15px auto; }
+        .action-drawer { position: fixed; top: 0; right: 0; width: var(--drawer-w); height: 100vh; background: var(--surface); border-left: 1px solid var(--border); z-index: 1100; padding: 1.5rem; box-sizing: border-box; transform: translateX(100%); transition: var(--transition); display: flex; flex-direction: column; }
+        .action-drawer.open { transform: translateX(0); }
+        .drawer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem; }
+        .drawer-title { font-weight: 700; font-size: 1.05rem; color: var(--text-heading); display: flex; align-items: center; gap: 10px; }
         .drawer-list { display: flex; flex-direction: column; gap: 8px; }
-        .drawer-item { display: flex; align-items: center; gap: 16px; padding: 14px 16px; background: var(--surface-elevated); border-radius: 12px; border: 1px solid var(--border); color: var(--text-main); font-size: 0.95rem; font-weight: 500; cursor: pointer; }
+        .drawer-item { display: flex; align-items: center; gap: 14px; padding: 14px 16px; background: var(--surface-elevated); border-radius: 12px; border: 1px solid var(--border); color: var(--text-main); font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: var(--transition); }
+        .drawer-item:hover { background: var(--surface); border-color: var(--primary); color: var(--primary); transform: translateX(-4px); }
 
         /* --- Layout --- */
         .main-wrapper { display: flex; margin-top: var(--nav-h); max-width: 1440px; margin-left: auto; margin-right: auto; }
         .toc-aside { width: var(--toc-w); position: sticky; top: var(--nav-h); height: calc(100vh - var(--nav-h)); padding: 2rem 1.5rem; border-right: 1px solid var(--border); overflow-y: auto; transition: var(--transition); }
         body.toc-collapsed .toc-aside { margin-left: calc(-1 * var(--toc-w)); opacity: 0; visibility: hidden; }
-        .content-area { flex: 1; padding: 2rem; display: flex; justify-content: center; }
-        .report-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 3.5rem; max-width: 860px; width: 100%; box-shadow: var(--shadow-sm); }
+        .content-area { flex: 1; padding: 2rem; display: flex; justify-content: center; min-width: 0; }
+        .report-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 3.5rem; max-width: 860px; width: 100%; box-shadow: var(--shadow-sm); min-width: 0; overflow: hidden; }
 
-        /* --- Mobile Responsive --- */
+        /* --- Mobile --- */
         @media (max-width: 768px) {
-            .navbar { padding: 0 0.75rem; justify-content: space-between; }
-            .desktop-actions { display: none; }
-            .mobile-only { display: flex; align-items: center; gap: 2px; }
-            .brand-name { font-size: 0.9rem; color: var(--text-muted); font-weight: 500; }
-            .version-tag { display: none; }
-            
-            .toc-aside { position: fixed; left: 0; background: var(--bg); transform: translateX(-100%); z-index: 950; }
+            .navbar { padding: 0 0.5rem; gap: 8px; }
+            .brand-name, .version-tag { display: none; }
+            #file-selector { flex: 1; max-width: none; font-size: 0.8rem; height: 38px; }
+            .nav-btn { width: 38px; height: 38px; border-radius: 8px; }
+            .toc-aside { position: fixed; left: 0; background: var(--bg); transform: translateX(-100%); z-index: 950; width: 260px; }
             body:not(.toc-collapsed) .toc-aside { transform: translateX(0); }
             .content-area { padding: 0; }
             .report-card { padding: 2.5rem 1.25rem; border-radius: 0; border: none; }
+            .action-drawer { width: 85%; }
         }
 
-        /* --- System --- */
+        /* --- Utils --- */
         .reading-progress-container { position: absolute; bottom: -1px; left: 0; width: 100%; height: 2px; }
         #progress-bar { height: 100%; background: var(--primary); width: 0%; box-shadow: 0 0 8px var(--primary); }
         #loader { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 2000; transition: 0.4s; }
         .spinner { width: 30px; height: 30px; border: 3px solid var(--surface-elevated); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
-        .markdown-body { background: transparent !important; color: var(--text-main) !important; font-size: 1.05rem; line-height: 1.8; }
+        .markdown-body { background: transparent !important; color: var(--text-main) !important; font-size: 1.05rem; line-height: 1.8; word-break: break-word; }
+        .markdown-body table { display: block; overflow-x: auto; border: 1px solid var(--border); border-radius: 8px; background-color: var(--surface) !important; color: var(--text-main) !important; }
+        .markdown-body table tr { background-color: var(--surface) !important; border-top: 1px solid var(--border); }
+        .markdown-body table tr:nth-child(2n) { background-color: var(--surface-elevated) !important; }
+        .markdown-body table th, .markdown-body table td { border: 1px solid var(--border); padding: 8px 13px; color: var(--text-main) !important; }
     </style>
 </head>
 <body class="dark-mode">
@@ -152,53 +149,38 @@
     <div id="loader"><div class="spinner"></div></div>
 
     <header class="navbar">
-        <button class="mobile-toggle-btn" onclick="toggleTOC()" aria-label="Menu">
-            <i data-lucide="menu"></i>
-        </button>
-
-        <div class="brand-zone" onclick="location.reload()">
-            <div class="logo-icon"><i data-lucide="file-text" size="18"></i></div>
-            <span class="brand-name">TdyReport Viewer</span>
-            <span class="version-tag">v1.0</span>
+        <div class="nav-left">
+            <button class="nav-btn" onclick="toggleTOC()" aria-label="Mục lục"><i data-lucide="menu"></i></button>
+            <div class="brand-zone" onclick="location.reload()">
+                <div class="logo-icon"><i data-lucide="file-text" size="18"></i></div>
+                <span class="brand-name">TdyMD Viewer</span>
+                <span class="version-tag">v1.0.5</span>
+            </div>
         </div>
 
-        <!-- Desktop Action Bar -->
-        <div class="desktop-actions">
+        <div class="nav-right">
             <select id="file-selector" onchange="changeFile(this.value)">
                 <option value="report.md">report.md</option>
-                <option value="reports/report.md">reports/report.md</option>
-                <option value="reports/IMRAD_draft_v1.md">IMRAD_draft_v1.md</option>
-                <option value="custom">Load khác...</option>
             </select>
-            <button class="icon-btn" onclick="toggleTheme()"><i data-lucide="sun" id="sun-i"></i><i data-lucide="moon" id="moon-i" style="display:none"></i></button>
-            <button class="icon-btn" onclick="document.getElementById('file-input').click()"><i data-lucide="upload-cloud"></i></button>
-            <button class="icon-btn" onclick="window.print()"><i data-lucide="printer"></i></button>
-            <button class="icon-btn" onclick="copyRichText()"><i data-lucide="layout"></i></button>
-            <button class="icon-btn" onclick="copyMarkdown()"><i data-lucide="copy"></i></button>
-        </div>
-
-        <!-- Mobile Action Bar -->
-        <div class="mobile-only">
-            <button class="mobile-toggle-btn" onclick="toggleTheme()" id="theme-mobile-btn"><i data-lucide="sun"></i></button>
-            <button class="mobile-toggle-btn" onclick="openDrawer()"><i data-lucide="more-vertical"></i></button>
+            <button class="nav-btn" onclick="toggleTheme()" id="theme-btn"><i data-lucide="sun"></i></button>
+            <button class="nav-btn" onclick="openDrawer()"><i data-lucide="more-vertical"></i></button>
         </div>
 
         <div class="reading-progress-container"><div id="progress-bar"></div></div>
     </header>
 
+    <!-- Menu Drawer -->
     <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
     <div class="action-drawer" id="action-drawer">
-        <div class="drawer-handle"></div>
         <div class="drawer-header">
-            <span class="drawer-title">Công cụ báo cáo</span>
-            <button class="mobile-toggle-btn" onclick="closeDrawer()"><i data-lucide="x" size="20"></i></button>
+            <span class="drawer-title"><i data-lucide="file-text" size="20"></i> TdyMD Viewer v1.0.5</span>
+            <button class="nav-btn" onclick="closeDrawer()" style="border:none; background:transparent;"><i data-lucide="x"></i></button>
         </div>
         <div class="drawer-list">
             <div class="drawer-item" onclick="document.getElementById('file-input').click(); closeDrawer();"><i data-lucide="upload-cloud"></i> Tải file báo cáo lên</div>
             <div class="drawer-item" onclick="window.print(); closeDrawer();"><i data-lucide="printer"></i> In báo cáo / Xuất PDF</div>
             <div class="drawer-item" onclick="copyRichText(); closeDrawer();"><i data-lucide="layout"></i> Copy định dạng (Rich Text)</div>
             <div class="drawer-item" onclick="copyMarkdown(); closeDrawer();"><i data-lucide="copy"></i> Copy mã nguồn (Markdown)</div>
-            <div class="drawer-item" onclick="changeFile('custom'); closeDrawer();"><i data-lucide="file-search"></i> Chọn file khác từ server...</div>
         </div>
     </div>
 
@@ -215,7 +197,36 @@
         lucide.createIcons();
         const contentDiv = document.getElementById('content');
         const progressBar = document.getElementById('progress-bar');
-        
+        const fileSelector = document.getElementById('file-selector');
+
+        // Danh sách dự phòng nếu không tải được JSON tự động
+        const FALLBACK_REPORTS = ['reports/report.md'];
+
+        async function initFileSelector() {
+            try {
+                // Thử tải danh sách file tự động từ file được GitHub Action tạo ra
+                const response = await fetch('reports.json');
+                if (!response.ok) throw new Error("Manifest not found");
+                const reports = await response.json();
+                renderFileOptions(reports);
+            } catch (e) {
+                console.warn("Sử dụng danh sách dự phòng...");
+                renderFileOptions(FALLBACK_REPORTS);
+            }
+        }
+
+        function renderFileOptions(reports) {
+            fileSelector.innerHTML = reports.map(f => `<option value="${f}">${f}</option>`).join('') + '<option value="custom">Load khác...</option>';
+            // Khôi phục file cuối cùng đã xem
+            const last = localStorage.getItem('lastFile');
+            if (last && reports.includes(last)) {
+                fileSelector.value = last;
+                loadFile(last);
+            } else {
+                loadFile(reports[0]);
+            }
+        }
+
         function toggleTOC() { document.body.classList.toggle('toc-collapsed'); }
         function openDrawer() { document.getElementById('action-drawer').classList.add('open'); document.getElementById('drawer-overlay').classList.add('open'); }
         function closeDrawer() { document.getElementById('action-drawer').classList.remove('open'); document.getElementById('drawer-overlay').classList.remove('open'); }
@@ -227,9 +238,7 @@
         }
         function updateThemeIcons() {
             const isLight = document.body.classList.contains('light-mode');
-            document.getElementById('sun-i').style.display = isLight ? 'none' : 'block';
-            document.getElementById('moon-i').style.display = isLight ? 'block' : 'none';
-            document.getElementById('theme-mobile-btn').innerHTML = `<i data-lucide="${isLight ? 'moon' : 'sun'}"></i>`;
+            document.getElementById('theme-btn').innerHTML = `<i data-lucide="${isLight ? 'moon' : 'sun'}"></i>`;
             lucide.createIcons();
         }
 
@@ -237,16 +246,20 @@
             showLoader();
             try {
                 const r = await fetch(f);
+                if (!r.ok) throw new Error("File not found");
                 const md = await r.text();
                 renderMarkdown(md);
                 localStorage.setItem('lastFile', f);
-            } catch(e) { console.error(e); } finally { hideLoader(); }
+            } catch(e) { 
+                contentDiv.innerHTML = `<div style="padding:40px; text-align:center;"><h3>Không tìm thấy báo cáo</h3><p>${f}</p></div>`;
+            } finally { hideLoader(); }
         }
 
         function renderMarkdown(md) {
             marked.setOptions({ highlight: (c, l) => Prism.languages[l] ? Prism.highlight(c, Prism.languages[l], l) : c });
             contentDiv.innerHTML = marked.parse(md);
             generateTOC();
+            window.scrollTo(0,0);
         }
 
         function generateTOC() {
@@ -266,23 +279,25 @@
         };
 
         function changeFile(v) { if(v==='custom'){const c=prompt("Path:"); if(c)loadFile(c);} else loadFile(v); }
-        function handleFileUpload(e) { const f=e.target.files[0]; if(!f)return; const r=new FileReader(); r.onload=(ev)=>renderMarkdown(ev.target.result); r.readAsText(f); }
+        function handleFileUpload(e) { const f=e.target.files[0]; if(!f)return; showLoader(); const r=new FileReader(); r.onload=(ev)=>{renderMarkdown(ev.target.result); hideLoader();}; r.readAsText(f); }
         async function copyMarkdown() { await navigator.clipboard.writeText(contentDiv.innerText); alert('Copied MD!'); }
         async function copyRichText() {
-            const blob = new Blob([contentDiv.innerHTML], { type: "text/html" });
-            const data = [new ClipboardItem({ ["text/html"]: blob, ["text/plain"]: new Blob([contentDiv.innerText], {type: "text/plain"}) })];
-            await navigator.clipboard.write(data);
-            alert('Copied Rich Text!');
+            try {
+                const blob = new Blob([contentDiv.innerHTML], { type: "text/html" });
+                const data = [new ClipboardItem({ ["text/html"]: blob, ["text/plain"]: new Blob([contentDiv.innerText], {type: "text/plain"}) })];
+                await navigator.clipboard.write(data);
+                alert('Copied Rich Text!');
+            } catch(e) { alert('Error copying rich text.'); }
         }
 
         function showLoader() { document.getElementById('loader').style.display='flex'; document.getElementById('loader').style.opacity='1'; }
         function hideLoader() { const l=document.getElementById('loader'); l.style.opacity='0'; setTimeout(()=>l.style.display='none',400); }
 
         document.addEventListener('DOMContentLoaded', () => {
+            initFileSelector();
             if (localStorage.getItem('theme') === 'light') document.body.classList.add('light-mode');
             if (window.innerWidth < 768) document.body.classList.add('toc-collapsed');
             updateThemeIcons();
-            loadFile(localStorage.getItem('lastFile') || 'report.md');
         });
     </script>
 </body>
