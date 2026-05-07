@@ -31,6 +31,28 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@main
 
+      - name: Generate Reports Manifest
+        run: |
+          node -e "
+          const fs = require('fs');
+          const reports = [];
+          if (fs.existsSync('reports')) {
+            fs.readdirSync('reports').forEach(file => {
+              if (file.endsWith('.md') && file.toLowerCase() !== 'readme.md') {
+                reports.push('reports/' + file);
+              }
+            });
+          }
+          // Prioritize report.md to be first
+          reports.sort((a, b) => {
+            if (a === 'reports/report.md') return -1;
+            if (b === 'reports/report.md') return 1;
+            return a.localeCompare(b);
+          });
+          fs.writeFileSync('reports.json', JSON.stringify(reports, null, 2));
+          console.log('Manifest generated with priority:', reports);
+          "
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@main
         with:
