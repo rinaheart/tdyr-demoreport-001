@@ -38,7 +38,7 @@ jobs:
           const reports = [];
           if (fs.existsSync('reports')) {
             fs.readdirSync('reports').forEach(file => {
-              if (file.endsWith('.md') && file.toLowerCase() !== 'readme.md') {
+              if (file.endsWith('.md')) {
                 reports.push('reports/' + file);
               }
             });
