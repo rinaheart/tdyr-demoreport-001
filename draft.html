@@ -1,97 +1,264 @@
 <!DOCTYPE html>
-<html>
-<title>My Pretty Page</title>
-<!-- This script does the conversion and styling automatically -->
-<xmp theme="united" style="display:none;">
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown Previewer - GAntigravity</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    
+    <!-- GitHub Markdown CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.5.1/github-markdown.min.css">
+    
+    <!-- Code Highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --sidebar-bg: #161b22;
+            --accent-color: #2f81f7;
+            --text-main: #c9d1d9;
+            --glass-bg: rgba(22, 27, 34, 0.8);
+        }
 
-# DRAFT BÀI BÁO KHOA HỌC (IMRAD) - V1d
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
 
-**Tiêu đề:** Đánh giá mức độ hài lòng của cán bộ giảng dạy về chương trình đổi mới tích hợp dựa trên năng lực ngành Răng Hàm Mặt tại Trường Đại học Y - Dược, Đại học Huế.
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            padding: 0 2rem;
+            z-index: 1000;
+            justify-content: space-between;
+        }
 
----
+        .brand {
+            font-weight: 700;
+            font-size: 1.2rem;
+            background: linear-gradient(90deg, #58a6ff, #bc8cff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
 
-## 1. ĐẶT VẤN ĐỀ (INTRODUCTION)
+        .file-info {
+            font-size: 0.85rem;
+            color: #8b949e;
+            background: rgba(255,255,255,0.05);
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
 
-Giáo dục nha khoa toàn cầu đang dịch chuyển mạnh mẽ sang mô hình đào tạo dựa trên năng lực (Competency-Based Education - CBE), nhấn mạnh vào việc hình thành năng lực thực hành, tư duy phản biện và khả năng giải quyết vấn đề thay vì chỉ truyền thụ kiến thức thuần túy. Các khung năng lực quốc tế như Miller’s Pyramid, ACGME hay ADEA đã trở thành nền tảng để thiết kế chương trình đào tạo (CTĐT), từ việc xác định năng lực cốt lõi đến việc xây dựng chiến lược dạy – học và lượng giá tương ứng [3]. Tại Việt Nam, xu hướng này được khởi xướng mạnh mẽ bởi các đơn vị tiên phong như Đại học Y Dược TP. Hồ Chí Minh với dự án đổi mới toàn diện CTĐT y khoa từ năm 2016, thu hút sự quan tâm lớn của cộng đồng khoa học quốc tế [4].
+        .actions {
+            display: flex;
+            gap: 1rem;
+        }
 
-Trường Đại học Y - Dược, Đại học Huế cũng đã bắt đầu triển khai đổi mới CTĐT ngành Răng Hàm Mặt (RHM) theo hướng tích hợp – dựa trên năng lực từ năm học 2018–2019. Trong quy trình đảm bảo chất lượng và kiểm định giáo dục, việc khảo sát sự hài lòng của các bên liên quan, đặc biệt là cán bộ giảng dạy (CBGD), là một yêu cầu bắt buộc và then chốt [7]. Mặc dù đã có một số nghiên cứu khảo sát sự hài lòng của người học tại Việt Nam [5, 6], các nghiên cứu tập trung riêng vào đối tượng CBGD ngành RHM về CTĐT tích hợp còn khá hạn chế, đặc biệt là tại khu vực miền Trung. Do đó, nghiên cứu này được thực hiện nhằm đánh giá mức độ hài lòng của CBGD đối với CTĐT RHM đổi mới tại Trường Đại học Y - Dược, Đại học Huế và tìm hiểu mối liên quan giữa thâm niên công tác với sự chấp nhận chương trình, nhằm cung cấp bằng chứng cho việc tối ưu hóa quy trình đào tạo.
+        .btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
 
-## 2. ĐỐI TƯỢNG VÀ PHƯƠNG PHÁP NGHIÊN CỨU (METHODS)
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-color);
+        }
 
-### 2.1. Đối tượng và Thiết kế nghiên cứu
-Nghiên cứu mô tả cắt ngang (cross-sectional) được thực hiện từ tháng 09/2024 đến tháng 03/2025 tại Trường Đại học Y - Dược, Đại học Huế. Đối tượng nghiên cứu là CBGD đang trực tiếp tham gia giảng dạy ít nhất một học phần/module trong CTĐT RHM đổi mới. 
-- **Tiêu chuẩn chọn:** CBGD có thời gian giảng dạy CTĐT mới từ 1 năm trở lên, đồng ý tham gia nghiên cứu.
-- **Tiêu chuẩn loại trừ:** CBGD đang nghỉ dài hạn (thai sản, đi học nước ngoài) hoặc bảng hỏi thiếu thông tin quan trọng.
-Nghiên cứu đã được thông qua và chấp thuận bởi Ban Giám hiệu nhà trường và tuân thủ các nguyên tắc đạo đức trong nghiên cứu y sinh học.
+        /* Main Content */
+        .container {
+            margin-top: 80px;
+            margin-left: auto;
+            margin-right: auto;
+            max-width: 900px;
+            width: 95%;
+            padding: 2rem;
+            background: var(--sidebar-bg);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            margin-bottom: 50px;
+            min-height: 400px;
+        }
 
-### 2.2. Cỡ mẫu và Chọn mẫu
-Sử dụng phương pháp chọn mẫu thuận tiện toàn bộ. Tổng cộng có 121 CBGD đủ tiêu chuẩn đã hoàn thành bảng hỏi hợp lệ, đảm bảo tính đại diện cho đội ngũ giảng viên nòng cốt của ngành RHM tại nhà trường.
+        .markdown-body {
+            background: transparent !important;
+            color: var(--text-main) !important;
+            font-family: 'Inter', sans-serif !important;
+        }
 
-### 2.3. Công cụ thu thập dữ liệu
-Công cụ nghiên cứu là bộ câu hỏi tự điền, được xây dựng dựa trên các guideline quốc tế và tham khảo từ các nghiên cứu tương tự về hài lòng CTĐT [1, 2]. Bộ câu hỏi đã được hiệu chỉnh ngôn ngữ và thực hiện *pilot* trên 10 CBGD trước khi triển khai chính thức. Thang đo Likert 5 mức độ được sử dụng (1: Rất không hài lòng → 5: Rất hài lòng) cho 3 lĩnh vực (domain) chính:
-- D1: Khối lượng học tập (Workload - 5 items).
-- D2: Cấu trúc và nội dung chương trình (Content - 9 items).
-- D3: Phương pháp giảng dạy và đánh giá (Teaching - 7 items).
-- Chỉ số hài lòng chung (Overall) là điểm trung bình cộng của tất cả các item.
+        .markdown-body h1, .markdown-body h2, .markdown-body h3 {
+            border-bottom-color: rgba(255, 255, 255, 0.1) !important;
+            color: #ffffff !important;
+        }
 
-### 2.4. Phân tích dữ liệu
-Dữ liệu được xử lý bằng phần mềm R (phiên bản 4.3.2). Độ tin cậy nội bộ được đánh giá qua hệ số Cronbach’s alpha, với các ngưỡng diễn giải phổ biến trong các nghiên cứu đo lường giáo dục y khoa (≥ 0.7: đạt; ≥ 0.8: tốt; ≥ 0.9: rất tốt) [5, 8]. Các biến số được mô tả bằng Trung vị (Median) và Khoảng tứ phân vị (IQR). Các kiểm định phi tham số Mann-Whitney U được dùng để so sánh giữa các nhóm thâm niên và Spearman correlation được dùng để đánh giá mối tương quan với mức ý nghĩa p < 0.05.
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-color); }
+        ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #484f58; }
 
-## 3. KẾT QUẢ (RESULTS)
+        /* Loader */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s;
+        }
 
-### 3.1. Đặc điểm mẫu nghiên cứu
-Mẫu nghiên cứu gồm 121 CBGD, trong đó nữ giới chiếm 60.3% (n=73). Đa số giảng viên có thâm niên từ 10 năm trở lên (62.0%, n=75), cho thấy đội ngũ tham gia đánh giá có kinh nghiệm chuyên môn dày dặn.
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid var(--accent-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
 
-### 3.2. Độ tin cậy và Mức độ hài lòng
-Thang đo đạt độ tin cậy "rất tốt" đến "xuất sắc": D1 (α=0.96), D2 (α=0.96), D3 (α=0.89) và Overall (α=0.97).
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-Mức độ hài lòng của CBGD ghi nhận ở mức cao đồng đều trên tất cả các lĩnh vực (Md = 4.0):
-- D1 (Workload): Md = 4.0 (IQR: 4.0 - 4.0).
-- D2 (Content): Md = 4.0 (IQR: 3.9 - 4.0).
-- D3 (Teaching): Md = 4.0 (IQR: 4.0 - 4.0).
-- Hài lòng chung: Md = 4.0 (IQR: 3.9 - 4.0).
-Điểm số tập trung rất cao quanh mức "Hài lòng", phản ánh sự đồng thuận lớn của đội ngũ giảng viên về chất lượng CTĐT. Tỷ lệ CBGD đánh giá ở mức "Hài lòng" và "Rất hài lòng" (điểm ≥ 4) đạt trên 85% ở tất cả các lĩnh vực.
+        /* Error state */
+        .error-box {
+            padding: 2rem;
+            text-align: center;
+            color: #f85149;
+            border: 1px dashed #f85149;
+            border-radius: 8px;
+            background: rgba(248, 81, 73, 0.1);
+        }
+    </style>
+</head>
+<body>
 
-### 3.3. So sánh theo thâm niên giảng dạy
-Kết quả kiểm định Mann-Whitney U không tìm thấy sự khác biệt có ý nghĩa thống kê về mức độ hài lòng giữa nhóm giảng viên <10 năm và ≥10 năm (D1: p=0.82; D2: p=0.45; D3: p=0.76; Overall: p=0.58). Điều này phản ánh sự đồng thuận cao và mức độ chấp nhận CTĐT mới khá đồng nhất trong toàn bộ đội ngũ giảng viên.
+    <div id="loader"><div class="spinner"></div></div>
 
-### 3.4. Phân tích tương quan
-Phân tích Spearman cho thấy mối tương quan thuận và rất mạnh giữa các domain với hài lòng chung. Đặc biệt, cấu trúc và nội dung chương trình (D2) là driver chính của sự hài lòng (r = 0.92, p < 0.001). Tương quan giữa các domain khác cũng đạt mức cao (D1-D2: r=0.84; D1-D3: r=0.66; D2-D3: r=0.62).
+    <nav class="navbar">
+        <div class="brand">
+            <span>⚡</span>
+            <span>MD Preview Pro</span>
+        </div>
+        <div id="current-file" class="file-info">Loading...</div>
+        <div class="actions">
+            <button class="btn" onclick="window.print()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v8H6z"/></svg>
+                In báo cáo
+            </button>
+            <button class="btn" onclick="copyContent()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                Copy Markdown
+            </button>
+        </div>
+    </nav>
 
-## 4. BÀN LUẬN (DISCUSSION)
+    <main class="container">
+        <article id="content" class="markdown-body">
+            <!-- Content will be injected here -->
+        </article>
+    </main>
 
-### 4.1. Ý nghĩa của mức hài lòng cao đối với CTĐT đổi mới
-Kết quả median = 4.0 và IQR hẹp cho thấy CBGD ngành RHM tại Huế có sự đồng thuận cao và đón nhận tích cực mô hình đào tạo dựa trên năng lực. Điều này phù hợp với kỳ vọng toàn cầu rằng CBE giúp nâng cao chuẩn năng lực lâm sàng và tư duy giải quyết vấn đề cho người học [3]. Việc đạt mức hài lòng cao ngay từ những năm đầu triển khai là minh chứng cho sự chuẩn bị kỹ lưỡng của nhà trường trong quy trình đổi mới [7].
+    <!-- Dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markdown.min.js"></script>
 
-### 4.2. Vai trò then chốt của nội dung chương trình (D2)
-Mối tương quan cực mạnh (r = 0.92) giữa domain D2 và hài lòng chung khẳng định rằng cấu trúc chương trình logic, cập nhật và bám sát chuẩn đầu ra là yếu tố quyết định niềm tin của giảng viên. Kết quả này tương đồng với nghiên cứu của Abdelsalam và cộng sự (2020), khi nhận thức về việc "chương trình đào tạo ra bác sĩ có năng lực" là biến số dự báo mạnh nhất cho sự hài lòng của giảng viên nha khoa [1].
+    <script>
+        let rawMarkdown = "";
 
-### 4.3. Sự chấp nhận đồng nhất giữa các nhóm thâm niên
-Việc không có khác biệt ý nghĩa thống kê theo thâm niên là một tín hiệu rất tích cực. Tương tự như ghi nhận của Tabassum (2022), sự hài lòng thường gắn với trình độ chuyên môn và quá trình chuẩn hóa (calibration) hơn là số năm công tác [2]. Điều này cho thấy CTĐT mới tại Huế đã được truyền thông và hỗ trợ triển khai hiệu quả cho cả hai thế hệ giảng viên trẻ và lâu năm.
+        async function loadMarkdown() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const fileName = urlParams.get('file') || 'report.md';
+            const fileInfo = document.getElementById('current-file');
+            const contentDiv = document.getElementById('content');
+            
+            fileInfo.textContent = `Source: ${fileName}`;
 
-### 4.4. So sánh với các nghiên cứu trong nước
-So với nghiên cứu tại Cần Thơ hay các khảo sát sinh viên y khoa tại Huế, kết quả của chúng tôi củng cố luận điểm rằng đội ngũ giảng viên, mục tiêu chương trình và phương pháp lượng giá (như OSCE) là những trụ cột tác động mạnh nhất đến sự hài lòng chung [5, 6]. Tuy nhiên, một số ý kiến góp ý về việc phân bổ thời gian tự học cho sinh viên (D1.5) cũng được ghi nhận như một điểm cần tiếp tục tối ưu hóa trong các chu kỳ cải tiến sau.
+            try {
+                const response = await fetch(fileName);
+                if (!response.ok) throw new Error(`Could not load ${fileName}`);
+                
+                rawMarkdown = await response.text();
+                
+                // Set options for marked
+                marked.setOptions({
+                    highlight: function(code, lang) {
+                        if (Prism.languages[lang]) {
+                            return Prism.highlight(code, Prism.languages[lang], lang);
+                        }
+                        return code;
+                    },
+                    breaks: true,
+                    gfm: true
+                });
 
-### 4.5. Hạn chế và Hướng nghiên cứu
-Nghiên cứu có hạn chế là sử dụng mẫu thuận tiện tại một cơ sở đào tạo duy nhất và dựa trên tự báo cáo. Tuy nhiên, kết quả này cung cấp bằng chứng thực nghiệm quan trọng hỗ trợ cho các quyết định duy trì và mở rộng CTĐT tích hợp ngành Răng Hàm Mặt, đồng thời kết nối hiệu quả với các nỗ lực đổi mới lượng giá như OSCE, mini-CEX hay EPAs đang được triển khai tại Huế. Các nghiên cứu tương lai nên mở rộng khảo sát đa trung tâm và kết hợp phương pháp định tính (phỏng vấn sâu) để đào sâu những rào cản thực tế khi triển khai đào tạo tích hợp.
+                contentDiv.innerHTML = marked.parse(rawMarkdown);
+            } catch (err) {
+                contentDiv.innerHTML = `
+                    <div class="error-box">
+                        <h3>Lỗi tải nội dung</h3>
+                        <p>${err.message}</p>
+                        <p>Hãy đảm bảo file <strong>${fileName}</strong> tồn tại trong cùng thư mục với draft.html</p>
+                    </div>
+                `;
+            } finally {
+                hideLoader();
+            }
+        }
 
-## 5. KẾT LUẬN
+        function hideLoader() {
+            const loader = document.getElementById('loader');
+            loader.style.opacity = '0';
+            setTimeout(() => {
+                loader.style.display = 'none';
+            }, 500);
+        }
 
-Nghiên cứu khẳng định CBGD ngành RHM tại Trường Đại học Y - Dược, Đại học Huế có mức độ hài lòng cao và đồng nhất đối với CTĐT đổi mới tích hợp – dựa trên năng lực, với độ tin cậy thang đo đạt mức rất tốt. Cấu trúc và nội dung chương trình là yếu tố then chốt quyết định sự hài lòng, đồng thời không ghi nhận sự khác biệt đáng kể giữa các nhóm thâm niên giảng dạy. Kết quả này là cơ sở quan trọng để nhà trường tiếp tục củng cố, cập nhật CTĐT và chú trọng đào tạo bồi dưỡng giảng viên về các phương pháp lượng giá năng lực hiện đại. Để có cái nhìn toàn diện hơn, các nghiên cứu đa trung tâm và nghiên cứu định tính cần được thực hiện nhằm đào sâu những khó khăn trong triển khai thực tế.
+        async function copyContent() {
+            if (!rawMarkdown) return;
+            try {
+                await navigator.clipboard.writeText(rawMarkdown);
+                alert('Đã copy Markdown vào bộ nhớ tạm!');
+            } catch (err) {
+                console.error('Lỗi khi copy:', err);
+            }
+        }
 
----
-
-## 6. TÀI LIỆU THAM KHẢO (REFERENCES)
-
-1. Abdelsalam M, et al. Student and Faculty Satisfaction with Their Dental Curriculum in a Dental College in Saudi Arabia. Int J Dent. 2020;2020:6839717.
-2. Tabassum A, et al. Attitudes and Satisfaction of Dental Faculty Toward Calibration in a Dental School. J Dent Educ. 2022;86(4):437-445.
-3. Sim GS. Embracing competency-based education for modern dental practice. Asia Pac Scholar. 2025;10(1).
-4. Duong DB, et al. Medical education reform in Vietnam: A case study of a national partnership. Lancet Reg Health West Pac. 2022;25:100494.
-5. Nguyễn Thị Thu và cs. Sự hài lòng của học viên Chuyên khoa I Điều dưỡng về chương trình đào tạo tại Trường Đại học Y Dược Cần Thơ. Tạp chí Y Dược học Cần Thơ. 2023;57:112-118.
-6. Lê Đình Tùng và cs. Khảo sát sự hài lòng của sinh viên y khoa về chương trình đào tạo tại Trường Đại học Y - Dược, Đại học Huế. Tạp chí Y học và Dược học. 2023;9(5):57-64.
-7. Trần Hữu Dàng và cs. Đổi mới chương trình đào tạo Y khoa và Răng Hàm Mặt theo hướng tích hợp – dựa trên năng lực tại Trường Đại học Y - Dược, Đại học Huế. Tạp chí Khoa học và Công nghệ. 2021.
-8. Nunnally JC, Bernstein IH. Psychometric Theory. 3rd ed. New York: McGraw-Hill; 1994.
-
-</xmp>
-<script src="http://strapdownjs.com"></script>
+        document.addEventListener('DOMContentLoaded', loadMarkdown);
+    </script>
+</body>
 </html>
